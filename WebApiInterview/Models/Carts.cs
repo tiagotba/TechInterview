@@ -22,5 +22,7 @@ namespace WebApiInterview.Models
         public decimal value_delivery { get; set; }
 
         public int quantity_cart { get; set; }
+
+        public decimal total_cart { get; set; }
     }
 }

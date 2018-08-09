@@ -9,6 +9,7 @@ using WebApiInterview.Services.Infrastructure;
 using Newtonsoft;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using WebApiInterview.Services.ModelsJson;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApiInterview.Controllers
@@ -43,40 +44,54 @@ namespace WebApiInterview.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public void Post([FromBody]List<String> jArticles, [FromBody]JObject jCarts, [FromBody]List<JObject> jDelivery_Fees, [FromBody]List<String> jDiscounts)
+        public DataCartsJsonOutput Post([FromBody]List<DataArtcilesItensJson> jArticles,  [FromBody]List<DataDiscountsJson> jDiscounts)
         {
             Articles resultArticle ;
-            Discounts resultDiscount = new Discounts();
+            DataCartsJsonOutput ret;
+            //Discounts resultDiscount = new Discounts();
+
             Carts cart = new Carts();
             cart.articles = new List<Articles>();
 
             foreach (var article in jArticles)
             {
+                resultArticle = _articles.Find(Convert.ToInt64(article.id_article));
 
-                resultArticle = JsonConvert.DeserializeObject<Articles>(article);
-                if ( _articles.Find(resultArticle.id) == null )
+                if ( resultArticle == null )
                 {
-                    _articles.Insert(resultArticle);
-                }
- 
-                foreach (var discount in jDiscounts)
-                {
-                    resultDiscount = JsonConvert.DeserializeObject<Discounts>(discount);
-                    if(resultArticle.idDiscount == resultDiscount.id_discount)
+                    var resp = new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.NotFound)
                     {
-                        resultArticle.price = resultArticle.price - resultDiscount.value_discount;
-                    }
+                        Content = new System.Net.Http.StringContent(string.Format("No product with ID = {0}", article.id_article)),
+                        ReasonPhrase = "Product Not Found"
+                    };
+                    throw new Exception(resp.ReasonPhrase);
+                }
+                else
+                {
+                  
                 }
 
-               
-                cart.id_cart += 1;
+                //foreach (var discount in jDiscounts)
+                //{
+                //    resultDiscount = JsonConvert.DeserializeObject<Discounts>(discount);
+                //    if(resultArticle.idDiscount == resultDiscount.id_discount)
+                //    {
+                //        resultArticle.price = resultArticle.price - resultDiscount.value_discount;
+                //    }
+                //}
+                
                 cart.articles.Add(resultArticle);
-                _carts.Insert(cart);
-
+                cart.quantity_cart = cart.articles.Count;
+                cart.total_cart += resultArticle.price;
             }
 
+            cart.id_cart += 1;
+            _carts.Insert(cart);
+            ret = new DataCartsJsonOutput();
+            ret.id_cart = Convert.ToString(cart.id_cart);
+            ret.total_cart = Convert.ToString(cart.total_cart);
 
-
+            return ret;
         }
 
         // PUT api/<controller>/5
