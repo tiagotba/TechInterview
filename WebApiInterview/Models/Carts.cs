@@ -13,9 +13,13 @@ namespace WebApiInterview.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long id_cart { get; set; }
 
-        public int id_article { get; set; }
+        //public long id_article { get; set; }
 
-        public int id_discount { get; set; }
+        //public long id_discount { get; set; }
+
+        public List<Articles> articles;
+
+        public decimal value_delivery { get; set; }
 
         public int quantity_cart { get; set; }
     }

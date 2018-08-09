@@ -12,6 +12,7 @@ namespace WebApiInterview.Services.Infrastructure
         void Insert(Articles articles);
         void Update(Articles articles);
         Articles Find(long id);
+        Decimal GetDiscount(long id);
         void Delete(long id);
     }
 }

@@ -34,6 +34,12 @@ namespace WebApiInterview.Services.Repository
             return _context.articles.ToList();
         }
 
+        public decimal GetDiscount(long id)
+        {
+          Discounts disc =  _context.discounts.FirstOrDefault(d => d.id_discount == id);
+            return disc.value_discount;
+        }
+
         public void Insert(Articles articles)
         {
             _context.articles.Add(articles);

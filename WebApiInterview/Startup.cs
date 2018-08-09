@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using WebApiInterview.Services.Infrastructure;
+using WebApiInterview.Services.Repository;
 
 namespace WebApiInterview
 {
@@ -24,6 +26,10 @@ namespace WebApiInterview
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddSingleton<IArticles, ArticleRepository>();
+            services.AddSingleton<ICarts, CartRepository>();
+            services.AddSingleton<IDiscounts, DiscountRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

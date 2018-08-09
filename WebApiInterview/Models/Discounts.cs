@@ -16,5 +16,7 @@ namespace WebApiInterview.Models
         public string type_discount { get; set; }
 
         public decimal value_discount { get; set; }
+
+        public List<Articles> articles { get; set; }
     }
 }
