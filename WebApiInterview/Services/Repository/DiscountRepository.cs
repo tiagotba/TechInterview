@@ -51,6 +51,7 @@ namespace WebApiInterview.Services.Repository
         public void Insert(DataDiscountsJson discounts)
         {
             Discounts ldiscount = new Discounts();
+            ldiscount.id_discount = Convert.ToInt64( discounts.id_discount);
             ldiscount.type_discount = discounts.type_discount;
             ldiscount.value_discount = Convert.ToDecimal( discounts.value_discount);
 
@@ -58,9 +59,15 @@ namespace WebApiInterview.Services.Repository
             _context.SaveChanges();
         }
 
-        public void Update(Discounts discounts)
+        public void Update(DataDiscountsJson discounts)
         {
-            _context.Discounts.Update(discounts);
+            //DataDiscountsJson lDiscount = Find(Convert.ToInt64(discounts.id_discount));
+            Discounts lDiscount = new Discounts();
+            lDiscount.id_discount = Convert.ToInt64(discounts.id_discount);
+            lDiscount.type_discount = discounts.type_discount;
+            lDiscount.value_discount = Convert.ToDecimal( discounts.value_discount);
+
+            _context.Discounts.Update(lDiscount);
             _context.SaveChanges();
         }
     }

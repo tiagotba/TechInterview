@@ -11,7 +11,7 @@ namespace WebApiInterview.Services.Infrastructure
     {
         IEnumerable<Discounts> GetAll();
         void Insert(DataDiscountsJson discounts);
-        void Update(Discounts discounts);
+        void Update(DataDiscountsJson discounts);
         DataDiscountsJson Find(long id);
         void Delete(long id);
     }

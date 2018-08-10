@@ -8,6 +8,10 @@ namespace WebApiInterview.Services.ModelsJson
 {
     public class DataDiscountsJson
     {
+
+        [JsonProperty("idDiscount")]
+        public string id_discount { get; set; }
+
         [JsonProperty("id")]
         public string id_article { get; set; }
 
