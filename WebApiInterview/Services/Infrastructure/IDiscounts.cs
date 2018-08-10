@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebApiInterview.Models;
+using WebApiInterview.Services.ModelsJson;
 
 namespace WebApiInterview.Services.Infrastructure
 {
    public interface IDiscounts
     {
         IEnumerable<Discounts> GetAll();
-        void Insert(Discounts discounts);
+        void Insert(DataDiscountsJson discounts);
         void Update(Discounts discounts);
-        Discounts Find(long id);
+        DataDiscountsJson Find(long id);
         void Delete(long id);
     }
 }

@@ -10,6 +10,7 @@ using Newtonsoft;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using WebApiInterview.Services.ModelsJson;
+using WebApiInterview.Services.Repository;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebApiInterview.Controllers
@@ -44,16 +45,16 @@ namespace WebApiInterview.Controllers
 
         // POST api/<controller>
         [HttpPost]
-        public DataCartsJsonOutput Post([FromBody]List<DataArtcilesItensJson> jArticles,  [FromBody]List<DataDiscountsJson> jDiscounts)
+        public ObjectResult Post([FromBody]List<DataArtcilesItensJson> json)
         {
-            Articles resultArticle ;
+            DataArtcilesJson resultArticle ;
             DataCartsJsonOutput ret;
-            //Discounts resultDiscount = new Discounts();
+            Articles articles;
 
             Carts cart = new Carts();
             cart.articles = new List<Articles>();
 
-            foreach (var article in jArticles)
+            foreach (var article in json)
             {
                 resultArticle = _articles.Find(Convert.ToInt64(article.id_article));
 
@@ -66,23 +67,46 @@ namespace WebApiInterview.Controllers
                     };
                     throw new Exception(resp.ReasonPhrase);
                 }
-                else
+
+                if (article.id_discount != null && article.id_discount != "0")
                 {
-                  
+                    var discount = _articles.GetDiscount(Convert.ToInt64(article.id_discount));
+                    if (discount > 0)
+                    {
+                        resultArticle.price =(Convert.ToDecimal(resultArticle.price) - Convert.ToDecimal(discount)).ToString();
+                    }
+                    else
+                    {
+                        var resp = new System.Net.Http.HttpResponseMessage(System.Net.HttpStatusCode.NotFound)
+                        {
+                            Content = new System.Net.Http.StringContent(string.Format("No discount for Product with ID = {0}", resultArticle.id)),
+                            ReasonPhrase = "Discount Not Found"
+                        };
+                        throw new Exception(resp.ReasonPhrase);
+                    }
                 }
 
-                //foreach (var discount in jDiscounts)
-                //{
-                //    resultDiscount = JsonConvert.DeserializeObject<Discounts>(discount);
-                //    if(resultArticle.idDiscount == resultDiscount.id_discount)
-                //    {
-                //        resultArticle.price = resultArticle.price - resultDiscount.value_discount;
-                //    }
-                //}
-                
-                cart.articles.Add(resultArticle);
+                articles = new Articles();
+                articles.id = Convert.ToInt64( resultArticle.id);
+                articles.price = Convert.ToDecimal(resultArticle.price);
+                articles.idDiscount = Convert.ToInt32(resultArticle.idDiscount);
+                cart.articles.Add(articles);
                 cart.quantity_cart = cart.articles.Count;
-                cart.total_cart += resultArticle.price;
+                cart.total_cart += Convert.ToDecimal(resultArticle.price);
+            }
+            
+            if (cart.total_cart < 1000)
+            {
+                cart.value_delivery = 800;
+            }
+            else
+                if (cart.total_cart > 1000 && cart.total_cart > 2000)
+            {
+                cart.value_delivery = 400;
+            }
+            else
+            {
+                cart.value_delivery = 0;
             }
 
             cart.id_cart += 1;
@@ -91,7 +115,7 @@ namespace WebApiInterview.Controllers
             ret.id_cart = Convert.ToString(cart.id_cart);
             ret.total_cart = Convert.ToString(cart.total_cart);
 
-            return ret;
+            return Ok(ret);
         }
 
         // PUT api/<controller>/5

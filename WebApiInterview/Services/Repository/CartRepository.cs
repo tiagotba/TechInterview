@@ -19,24 +19,24 @@ namespace WebApiInterview.Services.Repository
 
         public void Delete(long id)
         {
-            var entity = _context.carts.First(t => t.id_cart == id);
-            _context.carts.Remove(entity);
+            var entity = _context.Carts.First(t => t.id_cart == id);
+            _context.Carts.Remove(entity);
             _context.SaveChanges();
         }
 
         public Carts Find(long id)
         {
-            return _context.carts.FirstOrDefault(t => t.id_cart == id);
+            return _context.Carts.FirstOrDefault(t => t.id_cart == id);
         }
 
         public IEnumerable<Carts> GetAll()
         {
-            return _context.carts.ToList();
+            return _context.Carts.ToList();
         }
 
         public void Insert(Carts carts)
         {
-            _context.carts.Add(carts);
+            _context.Carts.Add(carts);
             _context.SaveChanges();
         }
     }

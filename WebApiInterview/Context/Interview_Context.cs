@@ -14,10 +14,16 @@ namespace WebApiInterview.Context
         { }
 
 
-        public DbSet<Articles> articles { get; set; }
+        public DbSet<Articles> Articles { get; set; }
 
-        public DbSet<Discounts> discounts { get; set; }
+        public DbSet<Discounts> Discounts { get; set; }
 
-        public DbSet<Carts> carts { get; set; }
+        public DbSet<Carts> Carts { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+        }
     }
 }
